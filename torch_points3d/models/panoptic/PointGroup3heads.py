@@ -106,10 +106,12 @@ class PointGroup3heads(BaseModel):
 
     def get_opt_mergeTh(self):
         """returns configuration"""
-        if self.opt.block_merge_th:
-            return self.opt.block_merge_th
-        else:
-            return 0.01
+        try:
+            if hasattr(self.opt, "block_merge_th") and getattr(self.opt, "block_merge_th") is not None:
+                return self.opt.block_merge_th
+        except Exception:
+            pass
+        return 0.01
     
     def set_input(self, data, device):
         self.raw_pos = data.pos.to(device)

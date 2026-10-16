@@ -422,6 +422,16 @@ class TreeinsOriginalFused(InMemoryDataset):
 
         self.processed_path = osp.join(self.processed_dir,'processed_test.pt')
 
+        all_exist = os.path.exists(self.processed_path)
+        if all_exist:
+            for i in range(len(test_area)):
+                if not os.path.exists(osp.join(self.processed_dir, self.processed_file_names[i])):
+                    all_exist = False
+                    break
+        if all_exist:
+            print("All processed test files already exist. Skipping process_test.")
+            return
+
         #if not os.path.exists(self.processed_dir):
         #    os.mkdir(self.processed_dir)
 

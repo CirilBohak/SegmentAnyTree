@@ -115,11 +115,21 @@ def pandas_to_las(csv, csv_file_provided=False, output_file_path=None, do_compre
 
     # add standard columns to the las file with the correct data types
     for column in columns_which_match:
-        las_file[column] = df[column].astype(standard_columns_with_data_types[column])
+        target_type = standard_columns_with_data_types[column]
+        if target_type in ['uint8', 'uint16', 'uint32', 'int8', 'int16', 'int32', 'int64']:
+            val = df[column].fillna(0).round().astype('int64')
+            las_file[column] = val.astype(target_type)
+        else:
+            las_file[column] = df[column].astype(target_type)
 
     # add extra columns to the las file with the correct data types
     for column in extra_columns:
-        las_file[column] = df[column].astype(extended_columns_with_data_types[column])
+        target_type = extended_columns_with_data_types[column]
+        if str(target_type) in ['uint8', 'uint16', 'uint32', 'int8', 'int16', 'int32', 'int64']:
+            val = df[column].fillna(0).round().astype('int64')
+            las_file[column] = val.astype(str(target_type))
+        else:
+            las_file[column] = df[column].astype(target_type)
 
     # Write the file to disk
     if do_compress:
